@@ -12,6 +12,7 @@ Click Code > Download ZIP > Extract all files to desktop
 - Set up webhooks.csv. The "Name" and "Webhook" column is REQUIRED. You can add more columns for extra customizability
 - If you do not code, I would recommend just deleting the app.py file and running the app.exe file
 
+![Webhook Sample](https://github.com/ayyitsc9/mass-discord-webhook-sender/blob/main/sample.PNG)
 
 Customizability
 ------------
