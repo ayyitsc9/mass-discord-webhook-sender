@@ -6,6 +6,7 @@ Installation and Set Up
 ------------
 Click Code > Download ZIP > Extract all files to desktop
 
+- Rename the yourname.env file to env
 - Put your test webhook url in the .env file using notepad (not required, this is for seeing your webhook message before actually sending it out to everyone)
 - Set up message.json. I have already put a template to go off of but you can use this useful tool for formatting purposes. # https://leovoel.github.io/embed-visualizer/
 - Set up webhooks.csv. The "Name" and "Webhook" column is REQUIRED. You can add more columns for extra customizability
