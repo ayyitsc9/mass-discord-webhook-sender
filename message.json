@@ -1,0 +1,40 @@
+{
+    "content": "This webhook is for {Name}!",
+    "username" : "C9 Webhooks",
+    "avatar_url": "https://cdn.discordapp.com/attachments/493803021365411840/712503871120867358/Bloom.png",
+    "embeds": [{
+      "title": "This is a sample webhook",
+      "description": "```Thanks for using my script! Please comment on my legit check if you found it to be useful!```",
+      "url": "https://discordapp.com",
+      "color": 3892720,
+      "footer": {
+        "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+        "text": "こんにちは、元気ですか"
+      },
+      "thumbnail": {
+        "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+      },
+      "image": {
+        "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+      },
+      "author": {
+        "name": "{Name}",
+        "url": "https://discordapp.com",
+        "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
+      },
+      "fields": [
+        {
+          "name": "Twitter",
+          "value": "[Follow Me](https://twitter.com/ayyitsc9)\n[Comment on my legit check](https://twitter.com/ayyitsc9/status/996240726286479360)"
+        },
+        {
+          "name": "{Discount Code}",
+          "value": "Fully customizable webhooks! YAY! 🎉"
+        },
+        {
+          "name": "🙄",
+          "value": "The test webhook will not replace the values wrapped in curly braces!"
+        }
+      ]
+    }]
+  }
