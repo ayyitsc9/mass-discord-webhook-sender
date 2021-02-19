@@ -197,10 +197,3 @@ while True:
 # Here is a great resource for visualizing your webhook post before sending it! (Not created by me, credits to the creator)
 # https://leovoel.github.io/embed-visualizer/
 # Make sure to enable webhook mode if you use the tool above
-
-
-# Process
-# Attempt to send test webhook first, after this ask for verification if they want to send all webhooks
-# Format Webhook Data
-# Load CSV Headers and Loop through the rest
-# Send webhooks (use threading)
