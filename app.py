@@ -154,7 +154,7 @@ class WebhookSender:
             requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
             Logger.success("[{}] Successfully sent message to webhook!".format(self.row_values[csv_labels.index("{Name}")]))
         except Exception as err:
-            Logger.error(err)
+            Logger.error(f"[{self.row_values}] Failed to send message to webhook! Error : {err}")
         
 # - - - -  - - - - - - - - - - - - - - - - - - -  - - - - - - - -
 
