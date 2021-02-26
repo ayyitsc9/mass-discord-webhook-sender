@@ -149,7 +149,7 @@ class WebhookSender:
     def send_webhook(self):
         try:
             # Send webhook message to the webhook from self.row_values
-            # requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+            requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
             queue_.put(self)
             Logger.success("[{}] Successfully sent message to webhook!".format(self.row_values[csv_labels.index("{Name}")]))
             queue_.get()
