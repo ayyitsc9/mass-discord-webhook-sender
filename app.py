@@ -1,4 +1,4 @@
-import time, sys, os, platform, json, csv, logging, requests, threading
+import time, sys, os, platform, json, csv, requests, threading, queue
 from datetime import datetime
 from art import text2art
 from colorama import init, Fore, Style
@@ -8,8 +8,6 @@ from dotenv import load_dotenv
 init(convert=True) if platform.system() == "Windows" else init()
 print(f"{Fore.CYAN}{Style.BRIGHT}{text2art('Created by @ayyitsc9')}\n")
 load_dotenv()
-# To avoid simultaneous printing from threads
-logging.basicConfig(format='%(message)s')
 # - - - -  - - - - - - - - - - - - - - - - - - -  - - - - - - - -
 
 lightblue = "\033[94m"
@@ -151,11 +149,16 @@ class WebhookSender:
     def send_webhook(self):
         try:
             # Send webhook message to the webhook from self.row_values
-            requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+            # requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+            queue_.put(self)
             Logger.success("[{}] Successfully sent message to webhook!".format(self.row_values[csv_labels.index("{Name}")]))
+            queue_.get()
+            queue_.task_done()
         except Exception as err:
+            queue_.put(self)
             Logger.error(f"[{self.row_values}] Failed to send message to webhook! Error : {err}")
-        
+            queue_.get()
+            queue_.task_done()
 # - - - -  - - - - - - - - - - - - - - - - - - -  - - - - - - - -
 
 while True:
@@ -167,6 +170,9 @@ while True:
     task = input("Enter Option : ")
     print("\n")
     if task == "1":
+        # Queue Handling | Initialize Queue
+        global queue_
+        queue_ = queue.Queue(maxsize=1)
         csv_labels = get_csv_labels()
         res = send_test_webhook(json.load(open("message.json", encoding='utf-8')))
         if res:
@@ -176,7 +182,10 @@ while True:
                 # Loop through csv_content and create/ start a Thread for each row
                 for row in csv_content:
                     thread = threading.Thread(target=run, args=(row,))
+                    queue_.put(row)
                     Logger.normal("[{}] Sending webhook message...".format(row[csv_labels.index("{Name}")]))
+                    queue_.get()
+                    queue_.task_done()
                     thread.start()
                     threads.append(thread)
                 # Wait for all threads to finish
