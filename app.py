@@ -54,12 +54,12 @@ def read_csv():
 def send_test_webhook(webhook_message):
     # Get test webhook url from env
     TEST_WEBHOOK_URL = os.getenv('TEST_WEBHOOK_URL')
-    try:
-        # Send webhook message to test webhook
-        requests.post(TEST_WEBHOOK_URL, json=webhook_message)
+    # Send webhook message to test webhook
+    req = requests.post(TEST_WEBHOOK_URL, json=webhook_message)
+    if req.status_code == 204:
         Logger.success("Successfully sent message to test webhook. Make sure to check it before sending to all webhooks!")
-    except Exception as err:
-        Logger.error(f"Failed to send test webhook. Error : {err}")
+    else:
+        Logger.error(f"Failed to send test webhook. Error : {req.status_code} | {req.json()}")
     while True:
         print(Style.RESET_ALL)
         # Verify if user would like to send the message to all of the webhooks in the csv file
@@ -147,16 +147,33 @@ class WebhookSender:
         return self.webhook_message
 
     def send_webhook(self):
-        try:
-            # Send webhook message to the webhook from self.row_values
-            requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+        # Send webhook message to the webhook from self.row_values
+        req = requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+        if req.status_code == 204:
             queue_.put(self)
             Logger.success("[{}] Successfully sent message to webhook!".format(self.row_values[csv_labels.index("{Name}")]))
             queue_.get()
             queue_.task_done()
-        except Exception as err:
+        elif req.status_code == 500:
             queue_.put(self)
-            Logger.error(f"[{self.row_values}] Failed to send message to webhook! Error : {err}")
+            Logger.success("[{}] Sleeping for 5 seconds and retrying...".format(self.row_values[csv_labels.index("{Name}")]))
+            queue_.get()
+            queue_.task_done()
+            time.sleep(5)
+            req2 = requests.post(self.row_values[csv_labels.index("{Webhook}")], json=self.formatted_message)
+            if req2.status_code == 204:
+                queue_.put(self)
+                Logger.success("[{}] Successfully sent message to webhook!".format(self.row_values[csv_labels.index("{Name}")]))
+                queue_.get()
+                queue_.task_done()
+            else:
+                queue_.put(self)
+                Logger.error(f"[{self.row_values}] Failed to send message to webhook on retry! Error : {req.status_code} | {req.json()}")
+                queue_.get()
+                queue_.task_done()
+        else:
+            queue_.put(self)
+            Logger.error(f"[{self.row_values}] Failed to send message to webhook! Error : {req.status_code} | {req.json()}")
             queue_.get()
             queue_.task_done()
 # - - - -  - - - - - - - - - - - - - - - - - - -  - - - - - - - -
@@ -193,7 +210,7 @@ while True:
                     x.join()
             except Exception as err:
                 Logger.error(f"Error occured while running #1 Webhook Sender : {err}")
-            Logger.success("Finished Webhook Sender Execution!")
+            Logger.other("Finished Webhook Sender Execution!")
     elif task == "2":
         Logger.other("Comment on my legit check @ https://twitter.com/ayyitsc9")
         Logger.other("Star the repository @ https://github.com/ayyitsc9/mass-discord-webhook-sender")
